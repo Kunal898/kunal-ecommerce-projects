@@ -45,7 +45,7 @@ Welcome to the official repository of **Shubharambh Collection**, a state-of-the
    ```env
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-   NEXT_PUBLIC_WHATSAPP_NUMBER=919766530018
+   NEXT_PUBLIC_WHATSAPP_NUMBER=91xxxxxxxxxx
    ```
 
 4. **Run Project**
