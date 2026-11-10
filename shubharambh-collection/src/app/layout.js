@@ -4,15 +4,15 @@ import Footer from "@/components/Footer";
 import WhatsAppFAB from "@/components/WhatsAppFAB";
 
 export const metadata = {
-  title: "Shubharambh Collection | Premium Sarees & Ethnic Wear - Seldoh, Maharashtra",
+  title: "Shubharambh Collection | Saree Shop Near Wardha, Seldoh, Maharashtra",
   description:
-    "Discover exquisite Banarasi, Kanjivaram, Paithani silk sarees, designer ethnic wear & wedding collections at Shubharambh Collection, Seldoh, Maharashtra 442104. Shop via video reels & order on WhatsApp.",
+    "Discover exquisite Banarasi, Kanjivaram & Paithani silk sarees and bridal collections at Shubharambh Collection, Seldoh, Maharashtra 442104. Best saree shop near Wardha. Watch video reels & order on WhatsApp.",
   keywords:
-    "sarees, silk sarees, Banarasi saree, Kanjivaram, Paithani, ethnic wear, wedding collection, Seldoh, Wardha, Maharashtra, Indian clothing",
+    "saree shop near Wardha, Banarasi sarees Seldoh Maharashtra, Paithani sarees, Kanjivaram silk sarees, bridal lehenga Wardha, Shubharambh Collection, ethnic wear Seldoh, Indian wedding sarees",
   openGraph: {
-    title: "Shubharambh Collection | Premium Sarees & Ethnic Wear",
+    title: "Shubharambh Collection | Saree Shop Near Wardha, Seldoh",
     description:
-      "Shop stunning sarees & ethnic wear through video reels. Order directly on WhatsApp!",
+      "Shop stunning Banarasi, Paithani & silk sarees through video reels. Order directly on WhatsApp with pan-India delivery!",
     type: "website",
   },
 };

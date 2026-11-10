@@ -1,18 +1,37 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 import { CATEGORIES } from "@/lib/constants";
+import { PRICE_RANGES, OCCASIONS } from "@/lib/siteContent";
 import { fetchProducts } from "@/lib/productsStore";
 import ProductCard from "@/components/ProductCard";
 import "./catalog.css";
+
+function CatalogSkeletonGrid() {
+  return (
+    <div className="catalog-grid">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div key={i} className="catalog-skeleton card">
+          <div className="catalog-skeleton__image" />
+          <div className="catalog-skeleton__body">
+            <div className="catalog-skeleton__line catalog-skeleton__line--title" />
+            <div className="catalog-skeleton__line catalog-skeleton__line--price" />
+            <div className="catalog-skeleton__line catalog-skeleton__line--btn" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function CatalogContent() {
   const searchParams = useSearchParams();
   const initialCat = searchParams.get("category") || "all";
 
   const [activeCategory, setActiveCategory] = useState(initialCat);
+  const [activeOccasion, setActiveOccasion] = useState("all");
+  const [priceRange, setPriceRange] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [searchQuery, setSearchQuery] = useState("");
   const [allProducts, setAllProducts] = useState([]);
@@ -21,9 +40,14 @@ function CatalogContent() {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      const data = await fetchProducts();
-      setAllProducts(data);
-      setLoading(false);
+      try {
+        const data = await fetchProducts();
+        setAllProducts(data);
+      } catch (err) {
+        console.error("Failed to load products:", err);
+      } finally {
+        setLoading(false);
+      }
     };
     loadData();
   }, []);
@@ -36,23 +60,48 @@ function CatalogContent() {
       items = items.filter((p) => p.category === activeCategory);
     }
 
-    // Search
+    // Occasion filter
+    if (activeOccasion !== "all") {
+      const occKey = activeOccasion.toLowerCase();
+      items = items.filter((p) => {
+        if (p.occasion && p.occasion.toLowerCase() === occKey) return true;
+        const text = `${p.name} ${p.description || ""} ${p.category || ""}`.toLowerCase();
+        if (occKey === "wedding") return text.includes("wedding") || text.includes("bridal") || text.includes("lehenga");
+        if (occKey === "festive") return text.includes("festive") || text.includes("paithani") || text.includes("banarasi") || text.includes("zari");
+        if (occKey === "party") return text.includes("designer") || text.includes("sequin") || text.includes("party");
+        if (occKey === "casual" || occKey === "daily") return text.includes("casual") || text.includes("cotton") || text.includes("kurta") || text.includes("daily");
+        return text.includes(occKey);
+      });
+    }
+
+    // Price range filter
+    if (priceRange !== "all") {
+      const range = PRICE_RANGES.find((r) => r.id === priceRange);
+      if (range) {
+        items = items.filter((p) => {
+          const price = Number(p.price) || 0;
+          return price >= range.min && price < range.max;
+        });
+      }
+    }
+
+    // Search filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       items = items.filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q)
+          (p.description && p.description.toLowerCase().includes(q))
       );
     }
 
     // Sort
     switch (sortBy) {
       case "price-low":
-        items.sort((a, b) => a.price - b.price);
+        items.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
         break;
       case "price-high":
-        items.sort((a, b) => b.price - a.price);
+        items.sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0));
         break;
       case "newest":
       default:
@@ -60,33 +109,48 @@ function CatalogContent() {
     }
 
     return items;
-  }, [activeCategory, sortBy, searchQuery, allProducts]);
+  }, [activeCategory, activeOccasion, priceRange, sortBy, searchQuery, allProducts]);
+
+  const clearAllFilters = () => {
+    setActiveCategory("all");
+    setActiveOccasion("all");
+    setPriceRange("all");
+    setSearchQuery("");
+    setSortBy("newest");
+  };
+
+  const hasActiveFilters =
+    activeCategory !== "all" ||
+    activeOccasion !== "all" ||
+    priceRange !== "all" ||
+    searchQuery.trim() !== "";
 
   return (
     <div className="catalog-page">
-      {/* Header */}
+      {/* Header with SEO-rich title */}
       <div className="catalog-header">
         <div className="container">
           <h1 className="catalog-title font-display">
-            Our <span className="text-gradient">Collection</span>
+            Banarasi &amp; Silk Sarees <span className="text-gradient">Catalog</span>
           </h1>
           <p className="catalog-subtitle">
-            Browse our exclusive range of handpicked sarees and ethnic wear.
+            Explore authentic Banarasi, Paithani, Kanjivaram sarees and bridal ethnic wear at Shubharambh Collection, Seldoh, Maharashtra.
           </p>
         </div>
       </div>
 
-      <div className="container">
-        {/* Filters */}
+      <div className="container catalog-body">
+        {/* Filters Card */}
         <div className="catalog-filters glass animate-fade-in-up">
+          {/* Categories */}
           <div className="catalog-filters__section">
-            <h3 className="filter-label">Categories</h3>
+            <span className="filter-label">Categories</span>
             <div className="cat-tags">
               <button
                 className={`cat-tag ${activeCategory === "all" ? "active" : ""}`}
                 onClick={() => setActiveCategory("all")}
               >
-                All Pieces
+                All Categories
               </button>
               {CATEGORIES.map((cat) => (
                 <button
@@ -100,12 +164,46 @@ function CatalogContent() {
             </div>
           </div>
 
-          <div className="catalog-filters__sidebar">
+          {/* Occasion Tags */}
+          <div className="catalog-filters__section">
+            <span className="filter-label">Shop by Occasion</span>
+            <div className="cat-tags">
+              {OCCASIONS.map((occ) => (
+                <button
+                  key={occ.id}
+                  className={`cat-tag ${activeOccasion === occ.id ? "active" : ""}`}
+                  onClick={() => setActiveOccasion(occ.id)}
+                >
+                  {occ.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Controls row: Price Range, Search, Sort */}
+          <div className="catalog-filters__controls">
             <div className="filter-group">
-              <label className="filter-label">Search</label>
+              <label className="filter-label" htmlFor="price-filter">Price Range</label>
+              <select
+                id="price-filter"
+                className="filter-select"
+                value={priceRange}
+                onChange={(e) => setPriceRange(e.target.value)}
+              >
+                {PRICE_RANGES.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="filter-group filter-group--search">
+              <label className="filter-label" htmlFor="search-input">Search Saree or Outfit</label>
               <input
+                id="search-input"
                 type="text"
-                placeholder="Search products..."
+                placeholder="e.g. Banarasi, Paithani, Red Lehenga..."
                 className="filter-input"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -113,8 +211,9 @@ function CatalogContent() {
             </div>
 
             <div className="filter-group">
-              <label className="filter-label">Sort By</label>
+              <label className="filter-label" htmlFor="sort-select">Sort By</label>
               <select
+                id="sort-select"
                 className="filter-select"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
@@ -127,42 +226,37 @@ function CatalogContent() {
           </div>
         </div>
 
-        {/* Results Info */}
-        <p className="results-count">
-          Showing {filteredProducts.length} of {allProducts.length} unique pieces
-        </p>
-
-        {/* Products Grid */}
-        <div className="catalog-grid">
-          {loading ? (
-            Array(8).fill(0).map((_, i) => (
-              <div key={i} className="product-skeleton glass animate-pulse" style={{ height: "400px", borderRadius: "20px" }}></div>
-            ))
-          ) : filteredProducts.length > 0 ? (
-            filteredProducts.map((product, i) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                index={i}
-              />
-            ))
-          ) : (
-            <div className="catalog-empty">
-              <span className="catalog-empty__icon">🔍</span>
-              <h3>No products found</h3>
-              <p>Try adjusting your search or browse a different category.</p>
-              <button
-                className="btn btn-outline"
-                onClick={() => {
-                  setActiveCategory("all");
-                  setSearchQuery("");
-                }}
-              >
-                Clear Filters
-              </button>
-            </div>
+        {/* Results Bar */}
+        <div className="catalog-results-bar">
+          <p className="results-count">
+            Showing <strong>{filteredProducts.length}</strong> of {allProducts.length} unique pieces
+          </p>
+          {hasActiveFilters && (
+            <button className="btn btn-ghost btn-sm" onClick={clearAllFilters}>
+              ✕ Reset Filters
+            </button>
           )}
         </div>
+
+        {/* Products Grid */}
+        {loading ? (
+          <CatalogSkeletonGrid />
+        ) : filteredProducts.length > 0 ? (
+          <div className="catalog-grid">
+            {filteredProducts.map((product, i) => (
+              <ProductCard key={product.id} product={product} index={i} />
+            ))}
+          </div>
+        ) : (
+          <div className="catalog-empty card">
+            <span className="catalog-empty__icon">🔍</span>
+            <h3>No Products Match Your Filters</h3>
+            <p>Try resetting your price range, category, or search keywords.</p>
+            <button className="btn btn-outline" onClick={clearAllFilters}>
+              Clear All Filters
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -170,7 +264,21 @@ function CatalogContent() {
 
 export default function Catalog() {
   return (
-    <Suspense fallback={<div className="loading-state">Loading Catalog...</div>}>
+    <Suspense
+      fallback={
+        <div className="catalog-page">
+          <div className="catalog-header">
+            <div className="container">
+              <h1 className="catalog-title font-display">Our Collection</h1>
+              <p className="catalog-subtitle">Loading catalog items...</p>
+            </div>
+          </div>
+          <div className="container catalog-body">
+            <CatalogSkeletonGrid />
+          </div>
+        </div>
+      }
+    >
       <CatalogContent />
     </Suspense>
   );

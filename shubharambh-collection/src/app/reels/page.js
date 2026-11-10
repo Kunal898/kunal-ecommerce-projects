@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { formatPrice, getWhatsAppLink } from "@/lib/constants";
+import { formatPrice, getWhatsAppOrderLink } from "@/lib/constants";
 import { getReels } from "@/lib/reelsStore";
 import "./reels.css";
 
@@ -123,7 +123,7 @@ function ReelItem({ reel }) {
         ) : (
           <img
             src={reel.thumbnailUrl || "/images/products/banarasi.png"}
-            alt={reel.productName}
+            alt={`${reel.title || reel.productName || "Saree"} – Video Reel at Shubharambh Collection`}
             className="reel-tile__image"
           />
         )}
@@ -144,11 +144,20 @@ function ReelItem({ reel }) {
           <div className="reel-tile__actions">
             <Link
               href={`/product/${reel.productId}`}
-              className="btn btn-accent btn-sm"
+              className="btn btn-outline btn-sm"
               onClick={(e) => e.stopPropagation()}
             >
-              Shop Now
+              View Details
             </Link>
+            <a
+              href={getWhatsAppOrderLink(reel.productName || reel.title, reel.category, reel.price)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-whatsapp btn-sm"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Order on WhatsApp
+            </a>
           </div>
         </div>
       </div>

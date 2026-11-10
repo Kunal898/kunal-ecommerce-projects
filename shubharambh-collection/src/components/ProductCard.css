@@ -3,9 +3,16 @@
    ═══════════════════════════════════════════ */
 
 .product-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
   text-decoration: none;
   position: relative;
+}
+
+.product-card__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }
 
 .product-card__image-wrap {
@@ -30,7 +37,7 @@
 .product-card__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent 60%);
+  background: linear-gradient(to top, rgba(0,0,0,0.55), transparent 60%);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -44,14 +51,14 @@
 }
 
 .product-card__view {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.2);
   backdrop-filter: blur(10px);
   padding: 8px 20px;
   border-radius: var(--radius-full);
   font-size: 0.85rem;
   font-weight: 600;
   color: white;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.25);
 }
 
 .product-card__badges {
@@ -64,7 +71,7 @@
 }
 
 .product-card__info {
-  padding: var(--space-md);
+  padding: var(--space-md) var(--space-md) var(--space-sm);
 }
 
 .product-card__name {
@@ -81,4 +88,37 @@
 .product-card__price {
   font-size: 1.1rem;
   font-weight: 700;
+}
+
+/* WhatsApp Order Button on Card */
+.product-card__actions {
+  padding: 0 var(--space-md) var(--space-md);
+  margin-top: auto;
+}
+
+.product-card__wa-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--clr-whatsapp), var(--clr-whatsapp-dark));
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+  min-height: 44px; /* Mobile tap target */
+}
+
+.product-card__wa-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+}
+
+.product-card__wa-btn:active {
+  transform: translateY(0);
 }

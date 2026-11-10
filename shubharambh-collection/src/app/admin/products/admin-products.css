@@ -55,7 +55,7 @@
   cursor: pointer;
   overflow: hidden;
   transition: all var(--duration-normal) var(--ease-out);
-  background: rgba(26, 26, 32, 0.5);
+  background: var(--clr-bg-elevated);
 }
 
 .apf-image-upload:hover {

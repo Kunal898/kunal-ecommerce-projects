@@ -10,6 +10,7 @@ import {
   formatPrice,
   getWhatsAppChatLink,
 } from "@/lib/constants";
+import { TESTIMONIALS } from "@/lib/siteContent";
 import ProductCard from "@/components/ProductCard";
 import { fetchReels } from "@/lib/reelsStore";
 import { fetchProducts } from "@/lib/productsStore";
@@ -64,13 +65,13 @@ export default function Home() {
             📍 Seldoh, Maharashtra 442104
           </div>
           <h1 className="hero__title font-display animate-fade-in-up delay-1">
-            <span className="text-gradient">Elegance</span> Woven in
+            <span className="text-gradient">Banarasi &amp; Silk Sarees</span>
             <br />
-            Every Thread
+            Saree Shop Near Wardha &amp; Seldoh
           </h1>
           <p className="hero__subtitle animate-fade-in-up delay-2">
-            Discover handpicked Banarasi, Kanjivaram & Paithani silk sarees.
-            Watch video reels, choose your favourite, and order on WhatsApp.
+            Discover handpicked Banarasi, Kanjivaram &amp; Paithani silk sarees at Shubharambh Collection, Seldoh, Maharashtra.
+            Watch video reels, choose your favourite piece, and order directly on WhatsApp.
           </p>
           <div className="hero__actions animate-fade-in-up delay-3">
             <Link href="/reels" className="btn btn-accent btn-lg">
@@ -170,7 +171,7 @@ export default function Home() {
                   ) : reel.thumbnailUrl ? (
                     <Image
                       src={reel.thumbnailUrl}
-                      alt={reel.productName}
+                      alt={`${reel.productName} Saree Video Reel at Shubharambh Collection`}
                       width={300}
                       height={500}
                       className="reel-card__image"
@@ -205,7 +206,7 @@ export default function Home() {
               <p className="section-subtitle">Our most loved pieces this season</p>
             </div>
             <Link href="/catalog" className="btn btn-outline">
-              Full Catalog →
+              Browse Full Catalog →
             </Link>
           </div>
 
@@ -234,6 +235,51 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ══════ CUSTOMER REVIEWS & TESTIMONIALS ══════ */}
+      <section className="section testimonials-section" id="testimonials-section">
+        <div className="container">
+          <div className="section-header">
+            <div>
+              <h2 className="section-title font-display">
+                Loved by <span className="text-gradient">Our Customers</span>
+              </h2>
+              <div className="divider"></div>
+              <p className="section-subtitle">Real experiences from saree lovers across Maharashtra</p>
+            </div>
+            <a
+              href="https://g.page/r/your-google-review-link"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-outline"
+            >
+              ⭐ 4.8 on Google (100+ Reviews)
+            </a>
+          </div>
+
+          <div className="testimonials-grid">
+            {TESTIMONIALS.map((review, i) => (
+              <div
+                key={review.id}
+                className="testimonial-card card animate-fade-in-up"
+                style={{ animationDelay: `${i * 90}ms` }}
+              >
+                <div className="testimonial-card__header">
+                  <div className="testimonial-card__avatar">{review.initial}</div>
+                  <div>
+                    <h3 className="testimonial-card__name">{review.name}</h3>
+                    <p className="testimonial-card__location">{review.location}</p>
+                  </div>
+                </div>
+                <div className="testimonial-card__rating">
+                  {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                </div>
+                <p className="testimonial-card__quote">&ldquo;{review.quote}&rdquo;</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ══════ VISIT OUR STORE ══════ */}
       <section className="section visit-section" id="visit-section">
         <div className="container">
@@ -242,7 +288,7 @@ export default function Home() {
               <div className="visit-images__main animate-fade-in-up">
                 <Image
                   src="/images/shop/shop-photo-1.jpg"
-                  alt="Shubharambh Collection - Real Store Photo"
+                  alt="Shubharambh Collection - Saree Shop in Seldoh Near Wardha, Maharashtra"
                   width={600}
                   height={450}
                   className="visit-images__img"
@@ -255,7 +301,7 @@ export default function Home() {
               <div className="visit-images__secondary animate-fade-in-up delay-2">
                 <Image
                   src="/images/shop/shop-photo-2.jpg"
-                  alt="Shubharambh Collection Interior"
+                  alt="Shubharambh Collection Seldoh - Banarasi & Silk Sarees Showroom"
                   width={300}
                   height={250}
                   className="visit-images__img"
@@ -264,7 +310,7 @@ export default function Home() {
               <div className="visit-images__secondary animate-fade-in-up delay-3">
                 <Image
                   src="/images/shop/shop-photo-3.jpg"
-                  alt="Shubharambh Collection Store View"
+                  alt="Shubharambh Collection Seldoh - Ethnic Wear Store Interior"
                   width={300}
                   height={250}
                   className="visit-images__img"
@@ -275,12 +321,12 @@ export default function Home() {
             <div className="visit-info animate-fade-in-up delay-1">
               <span className="badge badge-new">🏪 Visit Us</span>
               <h2 className="section-title font-display">
-                Visit Our <span className="text-gradient">Store</span>
+                Visit Our Saree Shop in <span className="text-gradient">Seldoh, Maharashtra</span>
               </h2>
               <div className="divider"></div>
               <p className="visit-info__text">
                 Experience our collection in person at our store near Samruddhi Interchange,
-                IC-03, Seldoh, Maharashtra. Touch the fabric, feel the quality, and find your perfect outfit.
+                IC-03, Seldoh, Maharashtra (near Wardha). Touch the fabric, feel the quality, and find your perfect outfit.
               </p>
 
               <div className="visit-details">
@@ -314,7 +360,7 @@ export default function Home() {
                   rel="noopener noreferrer"
                   className="btn btn-whatsapp"
                 >
-                  💬 Chat on WhatsApp
+                  💬 Ask a Question on WhatsApp
                 </a>
                 <Link href="/contact" className="btn btn-outline">
                   📍 View on Map

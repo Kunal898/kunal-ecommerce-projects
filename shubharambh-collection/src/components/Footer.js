@@ -35,9 +35,9 @@ export default function Footer() {
           <div className="footer__col">
             <h4 className="footer__heading">Quick Links</h4>
             <Link href="/" className="footer__link">Home</Link>
-            <Link href="/reels" className="footer__link">Video Reels</Link>
-            <Link href="/catalog" className="footer__link">Full Catalog</Link>
-            <Link href="/contact" className="footer__link">Contact Us</Link>
+            <Link href="/reels" className="footer__link">Watch Reels</Link>
+            <Link href="/catalog" className="footer__link">Browse Catalog</Link>
+            <Link href="/contact" className="footer__link">Visit &amp; Contact</Link>
           </div>
 
           {/* Categories */}

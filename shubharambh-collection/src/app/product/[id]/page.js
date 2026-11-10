@@ -40,50 +40,46 @@ export default function ProductPage() {
     
     setIsOrdering(true);
     const orderSize = selectedSize || product.sizes?.[0] || "Free Size";
+    const categoryName = category?.name || product.category || "";
+    const priceText = product.price ? `₹${Number(product.price).toLocaleString("en-IN")}` : "Price on request";
 
+    // 1. Try to record in Supabase in background (do not block WhatsApp order if DB fails)
     try {
-      // 1. Save order in Supabase
-      const { error } = await supabase.from("orders").insert([
-        {
-          product_id: product.id,
-          product_name: product.name,
-          price: product.price,
-          status: "pending",
-          customer_details: {
-            size: orderSize,
-            color: product.color || "As shown",
+      if (supabase) {
+        await supabase.from("orders").insert([
+          {
+            product_id: product.id,
+            product_name: product.name,
+            price: product.price || 0,
+            status: "pending",
+            customer_details: {
+              size: orderSize,
+              color: product.color || "As shown",
+            },
           },
-        },
-      ]);
+        ]);
+      }
+    } catch (dbErr) {
+      console.warn("Order DB logging skipped:", dbErr);
+    }
 
-      if (error) throw error;
+    // 2. Build WhatsApp message adhering to requirement:
+    // "Hi, I'm interested in [Product Name] ([Category]) - Price: [Price]. Is this available?"
+    const message = `Hi Shubharambh Collection,
 
-      // 2. Build message
-      const message = `Hi Shubharambh Collection,
+I'm interested in *${product.name}*${categoryName ? ` (${categoryName})` : ""} - Price: ${priceText}.
 
-I want to order:
-
-🛍️ Product: ${product.name}
-🎨 Color: ${product.color || "As shown"}
-📏 Size: ${orderSize}
-💰 Price: ₹${product.price}
-
+📏 Selected Size: ${orderSize}
 🔗 Product Link: ${window.location.href}
 
-Please confirm availability.`;
+Is this available?`;
 
-      const encodedMessage = encodeURIComponent(message);
-      const whatsappUrl = `https://wa.me/${SHOP_INFO.whatsapp}?text=${encodedMessage}`;
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${SHOP_INFO.whatsapp}?text=${encodedMessage}`;
 
-      // 3. User Feedback & Redirect
-      alert("Redirecting to WhatsApp...");
-      window.open(whatsappUrl, "_blank");
-    } catch (err) {
-      console.error("Order error:", err);
-      alert("Something went wrong. Please try again.");
-    } finally {
-      setIsOrdering(false);
-    }
+    // 3. Open WhatsApp directly
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    setIsOrdering(false);
   };
 
   if (!product) {
@@ -137,10 +133,10 @@ Please confirm availability.`;
         <div className="product-main">
           {/* Image Gallery */}
           <div className="product-gallery animate-fade-in-up">
-            <div className="product-gallery__main">
+            <div className="product-gallery__main card">
               <Image
                 src={productImages[activeImage] || product.image}
-                alt={product.name}
+                alt={`${product.name} – ${category?.name || "Ethnic Wear"} Saree at Shubharambh Collection`}
                 width={600}
                 height={750}
                 className="product-gallery__image"
@@ -163,7 +159,7 @@ Please confirm availability.`;
                     className={`product-gallery__thumb ${activeImage === i ? "product-gallery__thumb--active" : ""}`}
                     onClick={() => setActiveImage(i)}
                   >
-                    <Image src={img} alt="" width={80} height={100} />
+                    <Image src={img} alt={`${product.name} thumbnail view ${i + 1}`} width={80} height={100} />
                   </button>
                 ))}
               </div>

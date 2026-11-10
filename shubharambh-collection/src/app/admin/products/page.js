@@ -22,6 +22,7 @@ export default function AdminProductsPage() {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
+    priceOnRequest: false,
     category: "",
     description: "",
     sizes: "Free Size",
@@ -34,6 +35,7 @@ export default function AdminProductsPage() {
     setFormData({
       name: "",
       price: "",
+      priceOnRequest: false,
       category: "",
       description: "",
       sizes: "Free Size",
@@ -53,7 +55,8 @@ export default function AdminProductsPage() {
     setEditingProduct(product);
     setFormData({
       name: product.name,
-      price: product.price.toString(),
+      price: product.price ? product.price.toString() : "",
+      priceOnRequest: !product.price || product.price === 0,
       category: product.category,
       description: product.description || "",
       sizes: product.sizes?.join(", ") || "Free Size",
@@ -125,8 +128,13 @@ export default function AdminProductsPage() {
 
   // Handle add/edit submit
   const handleSubmit = async () => {
-    if (!formData.name || !formData.price || !formData.category) {
-      alert("Please fill in name, price, and category");
+    if (!formData.name || !formData.category) {
+      alert("Please fill in product name and category");
+      return;
+    }
+
+    if (!formData.priceOnRequest && (!formData.price || isNaN(formData.price))) {
+      alert("Please enter a valid price or check 'Price on Request'");
       return;
     }
 
@@ -136,9 +144,11 @@ export default function AdminProductsPage() {
       .map((s) => s.trim())
       .filter(Boolean);
 
+    const calculatedPrice = formData.priceOnRequest ? 0 : parseInt(formData.price, 10);
+
     const productData = {
       name: formData.name,
-      price: parseInt(formData.price),
+      price: calculatedPrice,
       category: formData.category,
       description: formData.description,
       sizes: sizesArray,
@@ -311,11 +321,28 @@ export default function AdminProductsPage() {
                     />
                   </div>
                   <div className="apf-field">
-                    <label className="apf-label">Price (₹) *</label>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <label className="apf-label">Price (₹) {!formData.priceOnRequest && "*"}</label>
+                      <label style={{ fontSize: "0.75rem", display: "inline-flex", alignItems: "center", gap: "4px", cursor: "pointer", color: "var(--clr-accent-dark)" }}>
+                        <input
+                          type="checkbox"
+                          checked={formData.priceOnRequest}
+                          onChange={(e) =>
+                            setFormData((p) => ({
+                              ...p,
+                              priceOnRequest: e.target.checked,
+                              price: e.target.checked ? "" : p.price,
+                            }))
+                          }
+                        />
+                        Price on Request
+                      </label>
+                    </div>
                     <input
                       className="apf-input"
                       type="number"
-                      placeholder="4500"
+                      placeholder={formData.priceOnRequest ? "Price on Request" : "4500"}
+                      disabled={formData.priceOnRequest}
                       value={formData.price}
                       onChange={(e) => setFormData((p) => ({ ...p, price: e.target.value }))}
                       id="product-price"

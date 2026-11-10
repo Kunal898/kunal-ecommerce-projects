@@ -9,7 +9,8 @@ export default function WhatsAppFAB() {
       target="_blank"
       rel="noopener noreferrer"
       className="whatsapp-fab"
-      aria-label="Chat on WhatsApp"
+      aria-label="Order or Chat on WhatsApp"
+      title="Order or Chat on WhatsApp"
       id="whatsapp-fab"
     >
       <svg viewBox="0 0 24 24" fill="white" width="30" height="30">

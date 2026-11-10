@@ -8,43 +8,43 @@
 
 /* ── CSS Custom Properties ── */
 :root {
-  /* Brand Colors — Deep Maroon & Gold */
+  /* Brand Colors — Deep Maroon & Gold (kept for accent) */
   --clr-primary: #7B1E3A;
   --clr-primary-light: #A33256;
   --clr-primary-dark: #5A1029;
-  --clr-primary-glow: rgba(123, 30, 58, 0.3);
+  --clr-primary-glow: rgba(123, 30, 58, 0.15);
 
-  --clr-accent: #D4A843;
-  --clr-accent-light: #E8C673;
-  --clr-accent-dark: #B08A2A;
+  --clr-accent: #B8942B;
+  --clr-accent-light: #D4A843;
+  --clr-accent-dark: #8F7220;
 
-  /* Surfaces */
-  --clr-bg: #0D0D0F;
-  --clr-bg-soft: #141418;
-  --clr-bg-card: #1A1A20;
-  --clr-bg-elevated: #222228;
-  --clr-bg-glass: rgba(26, 26, 32, 0.75);
+  /* Surfaces — Light Theme */
+  --clr-bg: #FDFBF7;
+  --clr-bg-soft: #F7F3EC;
+  --clr-bg-card: #FFFFFF;
+  --clr-bg-elevated: #F0ECE3;
+  --clr-bg-glass: rgba(255, 255, 255, 0.8);
 
-  /* Text */
-  --clr-text: #F5F0E8;
-  --clr-text-secondary: #B0A899;
-  --clr-text-muted: #706A60;
+  /* Text — Dark on Light */
+  --clr-text: #2D2A26;
+  --clr-text-secondary: #6B6560;
+  --clr-text-muted: #9E9790;
 
   /* Borders */
-  --clr-border: rgba(212, 168, 67, 0.15);
-  --clr-border-strong: rgba(212, 168, 67, 0.35);
+  --clr-border: rgba(180, 160, 120, 0.2);
+  --clr-border-strong: rgba(180, 160, 120, 0.4);
 
   /* Feedback */
-  --clr-success: #3ECFA0;
+  --clr-success: #2BA872;
   --clr-whatsapp: #25D366;
   --clr-whatsapp-dark: #128C7E;
 
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
-  --shadow-md: 0 8px 32px rgba(0,0,0,0.4);
-  --shadow-lg: 0 16px 64px rgba(0,0,0,0.5);
+  /* Shadows — softer for light theme */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.08);
+  --shadow-lg: 0 16px 64px rgba(0,0,0,0.1);
   --shadow-glow: 0 0 40px var(--clr-primary-glow);
-  --shadow-gold: 0 4px 24px rgba(212, 168, 67, 0.15);
+  --shadow-gold: 0 4px 24px rgba(184, 148, 43, 0.12);
 
   /* Typography */
   --font-body: 'Outfit', system-ui, sans-serif;
@@ -229,12 +229,12 @@ input, textarea, select {
 
 .btn-accent {
   background: linear-gradient(135deg, var(--clr-accent), var(--clr-accent-dark));
-  color: var(--clr-bg);
+  color: #FFFFFF;
   box-shadow: var(--shadow-gold);
 }
 .btn-accent:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(212, 168, 67, 0.3);
+  box-shadow: 0 8px 32px rgba(184, 148, 43, 0.25);
 }
 
 .btn-whatsapp {
@@ -297,6 +297,7 @@ input, textarea, select {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--clr-border);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ── Badge ── */
@@ -313,9 +314,9 @@ input, textarea, select {
 }
 
 .badge-new {
-  background: rgba(123, 30, 58, 0.2);
-  color: var(--clr-primary-light);
-  border: 1px solid rgba(123, 30, 58, 0.3);
+  background: rgba(123, 30, 58, 0.1);
+  color: var(--clr-primary);
+  border: 1px solid rgba(123, 30, 58, 0.2);
 }
 
 .badge-trending {
